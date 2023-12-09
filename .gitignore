@@ -6,6 +6,7 @@ db.sqlite3
 *.log
 .DS_Store
 *.bak
+PasswordManager/migrations/
 
 # Fichiers de développement
 .env
