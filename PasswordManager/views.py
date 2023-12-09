@@ -39,5 +39,5 @@ def Signup(request):
 
 
 @login_required
-def dashboard(request):
+def Dashboard(request):
     return render(request, 'dashboard.html')
