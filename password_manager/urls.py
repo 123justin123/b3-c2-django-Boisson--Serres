@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.urls import path
-from PasswordManager.views import Login
+from PasswordManager.views import Login, Signup
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', Login.as_view(), name='login'),
+    path('signup/', Signup, name='signup'),
 ]
