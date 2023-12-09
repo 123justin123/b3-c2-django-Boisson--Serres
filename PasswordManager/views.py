@@ -1,15 +1,21 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from django.urls import reverse_lazy
+
 
 class Login(SuccessMessageMixin, LoginView):
     template_name = 'registration/login.html'
     success_message = "Vous êtes connecté avec succès !"
     redirect_authenticated_user = True
+
+
+class Logout(LogoutView):
+    next_page = reverse_lazy('login')
 
 
 def Signup(request):
@@ -30,6 +36,7 @@ def Signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
+
 
 @login_required
 def dashboard(request):
