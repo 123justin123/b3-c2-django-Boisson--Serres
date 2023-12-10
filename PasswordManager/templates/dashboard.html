@@ -1,9 +1,117 @@
 {% extends 'base.html' %}
 
-{% block title %}Tableau de bord{% endblock %}
+{% block title %}Tableau de Bord{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h2>Tableau de bord</h2>
+    <h2>Tableau de Bord</h2>
+
+    <form method="post" action="{% url 'dashboard' %}" class="mb-4">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="site_nom">Nom du site</label>
+            <input type="text" class="form-control" id="site_nom" name="nom" placeholder="Entrez le nom du site">
+        </div>
+        <div class="form-group">
+            <label for="site_url">URL du site</label>
+            <input type="text" class="form-control" id="site_url" name="url" placeholder="Entrez l'URL du site">
+        </div>
+        <div class="form-group">
+            <label for="site_identifiant">Identifiant</label>
+            <input type="text" class="form-control" id="site_identifiant" name="identifiant" placeholder="Entrez l'identifiant">
+        </div>
+        <div class="form-group">
+            <label for="site_mot_de_passe">Mot de passe</label>
+            <input type="text" class="form-control" id="site_mot_de_passe" name="mot_de_passe" placeholder="Entrez le mot de passe">
+        </div>
+        <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> Ajouter un Site</button>
+    </form>
+
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>Nom</th>
+                <th>URL</th>
+                <th>Identifiant</th>
+                <th>Mot de Passe</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for site in sites %}
+            <form method="post" action="{% url 'edit_site' site.id %}">
+                {% csrf_token %}
+                <tr>
+                    <td>
+                        <span class="editable">{{ site.nom }}</span>
+                        <input type="text" class="form-control d-none" name="nom" value="{{ site.nom }}">
+                    </td>
+                    <td>
+                        <span class="editable">{{ site.url }}</span>
+                        <input type="text" class="form-control d-none" name="url" value="{{ site.url }}">
+                    </td>
+                    <td>
+                        <span class="editable">{{ site.identifiant }}</span>
+                        <input type="text" class="form-control d-none" name="identifiant" value="{{ site.identifiant }}">
+                    </td>
+                    <td>
+                        <div class="password-wrapper">
+                            <span class="password-asterisks editable">********</span>
+                            <input type="password" class="form-control d-none password-field" name="mot_de_passe" value="{{ site.mot_de_passe }}">
+                            <button type="button" class="btn btn-sm btn-outline-secondary toggle-password"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-primary edit-btn">Modifier</button>
+                        <button type="submit" class="btn btn-sm btn-success d-none save-btn">Enregistrer</button>
+                        <a href="{% url 'delete_site' site.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+                    </td>
+                </tr>
+            </form>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Aucun site ajouté pour le moment.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editButtons = document.querySelectorAll('.edit-btn');
+    const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const row = button.closest('tr');
+            const editables = row.querySelectorAll('.editable');
+            const inputs = row.querySelectorAll('input');
+            const saveButton = row.querySelector('.save-btn');
+
+            editables.forEach(e => e.classList.add('d-none'));
+            inputs.forEach(i => i.classList.remove('d-none'));
+            button.classList.add('d-none');
+            saveButton.classList.remove('d-none');
+        });
+    });
+
+    togglePasswordButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const passwordWrapper = button.closest('.password-wrapper');
+            const passwordField = passwordWrapper.querySelector('.password-field');
+            const passwordAsterisks = passwordWrapper.querySelector('.password-asterisks');
+
+            if (passwordAsterisks.textContent === '********') {
+                passwordAsterisks.textContent = passwordField.value;
+                button.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                passwordAsterisks.textContent = '********';
+                button.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        });
+    });
+});
+</script>
+
 {% endblock %}
