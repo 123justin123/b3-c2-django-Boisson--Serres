@@ -15,6 +15,7 @@ Ce projet utilise SQLite comme système de gestion de base de données, qui est 
 Exécutez les migrations pour initialiser votre base de données :
 
 ```bash
+python manage.py makemigrations PasswordManager
 python manage.py migrate
 ```
 
